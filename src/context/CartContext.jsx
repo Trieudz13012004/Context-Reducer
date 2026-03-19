@@ -1,81 +1,20 @@
 import { createContext, useReducer } from "react";
+import { cartReducer } from "./CartReducer";
 
 export const CartContext = createContext();
 
-const initialState = {
-  cart: []
-};
+export const CartProvider = ({ children }) => {
+  const [cart, dispatch] = useReducer(cartReducer, []);
 
-function cartReducer(state, action) {
-  switch (action.type) {
-    case "ADD_TO_CART": {
-      const exist = state.cart.find(
-        item => item.id === action.payload.id
-      );
-
-      if (exist) {
-        return {
-          ...state,
-          cart: state.cart.map(item =>
-            item.id === action.payload.id
-              ? { ...item, quantity: item.quantity + 1 }
-              : item
-          )
-        };
-      }
-
-      return {
-        ...state,
-        cart: [...state.cart, { ...action.payload, quantity: 1 }]
-      };
-    }
-
-    case "INCREASE":
-      return {
-        ...state,
-        cart: state.cart.map(item =>
-          item.id === action.payload
-            ? { ...item, quantity: item.quantity + 1 }
-            : item
-        )
-      };
-
-    case "DECREASE":
-      return {
-        ...state,
-        cart: state.cart
-          .map(item =>
-            item.id === action.payload
-              ? { ...item, quantity: item.quantity - 1 }
-              : item
-          )
-          .filter(item => item.quantity > 0)
-      };
-
-    case "REMOVE":
-      return {
-        ...state,
-        cart: state.cart.filter(
-          item => item.id !== action.payload
-        )
-      };
-
-    default:
-      return state;
-  }
-}
-
-function CartProvider({ children }) {
-  const [state, dispatch] = useReducer(
-    cartReducer,
-    initialState
+  const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
+  const totalPrice = cart.reduce(
+    (sum, item) => sum + item.quantity * item.price,
+    0
   );
 
   return (
-    <CartContext.Provider value={{ state, dispatch }}>
+    <CartContext.Provider value={{ cart, dispatch, totalItems, totalPrice }}>
       {children}
     </CartContext.Provider>
   );
-}
-
-export default CartProvider;
+};

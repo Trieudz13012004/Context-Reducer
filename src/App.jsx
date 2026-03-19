@@ -1,21 +1,11 @@
-import ProductList from "./components/ProductList.jsx";
-import Cart from "./components/Cart.jsx";
-import CartSummary from "./components/CartSummary.jsx";
+import Header from "./components/Header";
+import AppRoutes from "./routes";
 
 function App() {
   return (
     <>
-      <h1>Shopping Cart</h1>
-
-      <ProductList />
-
-      <hr />
-
-      <Cart />
-
-      <hr />
-
-      <CartSummary />
+      <Header />
+      <AppRoutes />
     </>
   );
 }
